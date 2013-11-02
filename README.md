@@ -12,6 +12,5 @@ Apache 作为老牌的 HTTP 软件，其地位不必多说。而Apache 2.4 版�
 PHP 5.5.5 是目前 PHP 5 系列的最新版，经过测试，可以兼容目前主流的 Blog、CMS、BBS 等程序。本人使用WordPress，经测试，完全兼容。
 
 一些说明：
-本一健安装程序不包含
 由于 Zend 已被 PHP 公司收购，Zend Optimizer 已更名为 Zend OPcache，且集成 PHP 5.5 的安装程序中。只需在安装 PHP 5.5 的时候加上--enable-opcache即可。
 本程序不带 eaccelerator，因为 Zend Opcache 与 eaccelerator 相冲突。
