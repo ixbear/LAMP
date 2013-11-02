@@ -261,8 +261,8 @@ make && make install
 
 cd $source_dir
 if [ `getconf WORD_BIT` = '32' ] && [ `getconf LONG_BIT` = '64' ] ; then
-        ln -s /usr/lib64/libpng.* /usr/lib/
-        ln -s /usr/lib64/libjpeg.* /usr/lib/
+	ln -s /usr/lib64/libpng.* /usr/lib/
+	ln -s /usr/lib64/libjpeg.* /usr/lib/
 fi
 
 ulimit -v unlimited
@@ -475,11 +475,9 @@ sed -i "s#\['blowfish_secret'\] = ''#['blowfish_secret'] = 'i@zhukun.net'#g" /ho
 ## others ##
 mkdir /home/wwwlogs
 
-
 chmod 777 /home/wwwlogs
 chmod 755 /home/wwwroot
 chown -R www:www /home/wwwroot
-
 
 ## Check program ##
 clear
