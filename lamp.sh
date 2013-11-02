@@ -516,7 +516,7 @@ fi
 echo ""
 
 ## Start services ##
-/etc/init.d/mysql restart
+/etc/init.d/mysqld restart
 /etc/init.d/httpd restart
 
 ## Completed ##
