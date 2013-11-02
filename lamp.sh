@@ -453,10 +453,26 @@ cd $source_dir
 tar -zxvf p.tar.gz
 cp p.php /home/wwwroot
 
-cat >/home/wwwroot/phpinfo.php<<eof
-<?
-phpinfo();
-?>
+cat >/home/wwwroot/index.html<<eof
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>LAMP一键安装包</title>
+</head>
+<body>
+<center>
+<p><br /><br /><br /><br /><br /><br /></p>
+<p>恭喜，LAMP一键安装包安装成功！</p>
+<p></p>
+<p><a href="/p.php" target="_blank">PHP探针</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/pma" target="_blank">phpMyAdmin</a></p>
+<p></p>
+<p>作者网站：<a href="http://www.zhukun.net" target="_blank">http://www.zhukun.net</a></p>
+<p></p>
+<p></p>
+</center>
+</body>
+</html>
 eof
 
 #########################Install phpMyAdmin#########################
