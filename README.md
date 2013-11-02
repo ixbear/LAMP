@@ -19,7 +19,7 @@ Apache 作为老牌的 HTTP 软件，在 Web 服务器市场多年排名第一�
 
 PHP 5.5.5 是目前 PHP 5 系列的最新版，经过测试，可以兼容目前主流的 Blog、CMS、BBS 等程序。本人的 WordPress 使用一切正常。
 
-PHP 参数已作优化，部分参数参考了 Godaddy / Bluehost 等主机商，除去稳定因此，几乎可以得到与 Godaddy / Bluehost 一样的性能体验。
+PHP 参数已作优化，部分参数参考了 Godaddy / Bluehost 等主机商，除去服务器稳定因素，几乎可以得到与 Godaddy / Bluehost 一样的性能体验。
 
 一些说明：
 
