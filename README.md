@@ -23,7 +23,7 @@ PHP 参数已作优化，部分参数参考了 Godaddy / Bluehost 等主机商�
 
 一些说明：
 
-由于 Zend 已被 PHP 公司收购，Zend Optimizer 已更名为 Zend OPcache，且集成 PHP 5.5 的安装程序中。只需在安装 PHP 5.5 的时候加上--enable-opcache即可。
+由于 Zend 已被 PHP 公司收购，Zend Optimizer 已更名为 Zend OPcache，且集成在 PHP 5.5 的安装程序中。只需在安装 PHP 5.5 的时候加上--enable-opcache即可。
 本程序不带 eaccelerator，因为 Zend Opcache 与 eaccelerator 相冲突。
 
 联系：
