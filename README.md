@@ -13,6 +13,8 @@ mysql-5.5.34.tar.gz
 
 php-5.5.5.tar.gz
 
+phpMyAdmin-4.0.8-all-languages.tar.gz
+
 Apache 作为老牌的 HTTP 软件，在 Web 服务器市场多年排名第一。而 Apache 2.4 版的发布，号称在速度上已超越了 Nginx。
 PHP 5.5.5 是目前 PHP 5 系列的最新版，经过测试，可以兼容目前主流的 Blog、CMS、BBS 等程序。本人的 WordPress 使用一切正常。
 
