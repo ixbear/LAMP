@@ -117,7 +117,7 @@ wget -c http://www.us.apache.org/dist/apr/apr-1.4.8.tar.gz
 wget -c http://www.us.apache.org/dist/apr/apr-util-1.5.2.tar.gz
 wget -c http://archive.apache.org/dist/httpd/httpd-2.4.6.tar.gz
 wget -c http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz
-wget -c ftp://mysql.mirrors.ovh.net/ftp.mysql.com/Downloads/MySQL-5.5/mysql-5.5.34.tar.gz
+wget -c http://mysql.mirrors.ovh.net/ftp.mysql.com/Downloads/MySQL-5.5/mysql-5.5.34.tar.gz
 wget -c http://sourceforge.net/projects/mcrypt/files/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz
 wget -c http://sourceforge.net/projects/mcrypt/files/MCrypt/2.6.8/mcrypt-2.6.8.tar.gz
 wget -c http://sourceforge.net/projects/mhash/files/mhash/0.9.9.9/mhash-0.9.9.9.tar.gz
