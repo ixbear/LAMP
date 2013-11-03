@@ -106,7 +106,7 @@ yum -y remove php*
 yum -y remove mysql*
 
 yum -y install yum-fastestmirror
-for packages in patch make gcc gcc-c++ gcc-g77 flex bison file libtool libtool-libs autoconf kernel-devel libjpeg libjpeg-devel libpng libpng-devel libpng10 libpng10-devel gd gd-devel freetype freetype-devel libxml2 libxml2-devel zlib zlib-devel glib2 glib2-devel bzip2 bzip2-devel ncurses ncurses-devel curl curl-devel e2fsprogs e2fsprogs-devel krb5 krb5-devel libidn libidn-devel openssl openssl-devel vim-enhanced fonts-chinese gettext gettext-devel gmp-devel pspell-devel unzip wget automake libevent libevent-devel libcap;
+for packages in patch make gcc gcc-c++ gcc-g77 flex bison file libtool libtool-libs autoconf kernel-devel libjpeg libjpeg-devel libpng libpng-devel libpng10 libpng10-devel gd gd-devel freetype freetype-devel libxml2 libxml2-devel zlib zlib-devel glib2 glib2-devel bzip2 bzip2-devel ncurses ncurses-devel curl curl-devel e2fsprogs e2fsprogs-devel krb5 krb5-devel libidn libidn-devel openssl openssl-devel vim-enhanced fonts-chinese gettext gettext-devel gmp-devel python pspell-devel unzip wget automake libevent libevent-devel libcap;
 do yum -y install $packages; done
 
 cd $source_dir
@@ -322,6 +322,8 @@ tar -zxvf httpd-2.4.6.tar.gz
 cd httpd-2.4.6
 if [ `getconf WORD_BIT` = '32' ] && [ `getconf LONG_BIT` = '64' ]; then
 	rm -f configure
+	cp -rf ../apr-1.4.8 ./srclib/apr
+	cp -rf ../apr-util-1.5.2 ./srclib/apr-util
 	./buildconf
 	./configure --prefix=/usr/local/apache2 --with-mysql=/usr/local/mysql --with-apr=/usr/local/apr/ --with-apr-util=/usr/local/apr-util/ --with-pcre=/usr/local/pcre/ --enable-deflate --enable-expires --enable-static-support --enable-rewrite --enable-so --enable-headers --enable-ssl --with-ssl --with-z --enable-cache --enable-file-cache --enable-disk-cache --enable-mem-cache --disable-userdir --enable-lib64 --libdir=/usr/lib64
 else
