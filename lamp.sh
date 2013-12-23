@@ -428,28 +428,28 @@ make ZEND_EXTRA_LIBS='-liconv'
 make install
 #安装完成以后会在/usr/local/apache2/modules目录下生成libphp5.so，同时执行apachectl -M可以看到已支持php5模块
 #同时会向httpd.conf中写入一行LoadModule php5_module
-cp php.ini-production /usr/local/php/php.ini
+cp php.ini-production /usr/local/php/etc/php.ini
 ln -s /usr/local/php/php.ini /etc/php.ini
 ln -s /usr/local/php/bin/php /usr/bin/php
 ln -s /usr/local/php/bin/phpize /usr/bin/phpize
 
-sed -i 's/post_max_size = 8M/post_max_size = 10M/g' /usr/local/php/php.ini
-sed -i 's/memory_limit = 128M/memory_limit = 64M/g' /usr/local/php/php.ini
-sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 10M/g' /usr/local/php/php.ini
-sed -i 's#;date.timezone =#date.timezone = "Asia/Shanghai"#g' /usr/local/php/php.ini
-sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /usr/local/php/php.ini
-sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/php.ini
+sed -i 's/post_max_size = 8M/post_max_size = 10M/g' /usr/local/php/etc/php.ini
+sed -i 's/memory_limit = 128M/memory_limit = 64M/g' /usr/local/php/etc/php.ini
+sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 10M/g' /usr/local/php/etc/php.ini
+sed -i 's#;date.timezone =#date.timezone = "Asia/Shanghai"#g' /usr/local/php/etc/php.ini
+sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /usr/local/php/etc/php.ini
+sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/etc/php.ini
 
-sed -i 's/;opcache.enable=0/opcache.enable=1/g' /usr/local/php/php.ini
-sed -i 's/;opcache.enable_cli=0/opcache.enable_cli=1/g' /usr/local/php/php.ini
-sed -i 's/;opcache.memory_consumption=64/opcache.memory_consumption=128/g' /usr/local/php/php.ini
-sed -i 's/;opcache.interned_strings_buffer=4/opcache.interned_strings_buffer=8/g' /usr/local/php/php.ini
-sed -i 's/;opcache.max_accelerated_files=2000/opcache.max_accelerated_files=4000/g' /usr/local/php/php.ini
-sed -i 's/;opcache.revalidate_freq=2/opcache.revalidate_freq=60/g' /usr/local/php/php.ini
-sed -i 's/;opcache.fast_shutdown=0/opcache.fast_shutdown=1/g' /usr/local/php/php.ini
+sed -i 's/;opcache.enable=0/opcache.enable=1/g' /usr/local/php/etc/php.ini
+sed -i 's/;opcache.enable_cli=0/opcache.enable_cli=1/g' /usr/local/php/etc/php.ini
+sed -i 's/;opcache.memory_consumption=64/opcache.memory_consumption=128/g' /usr/local/php/etc/php.ini
+sed -i 's/;opcache.interned_strings_buffer=4/opcache.interned_strings_buffer=8/g' /usr/local/php/etc/php.ini
+sed -i 's/;opcache.max_accelerated_files=2000/opcache.max_accelerated_files=4000/g' /usr/local/php/etc/php.ini
+sed -i 's/;opcache.revalidate_freq=2/opcache.revalidate_freq=60/g' /usr/local/php/etc/php.ini
+sed -i 's/;opcache.fast_shutdown=0/opcache.fast_shutdown=1/g' /usr/local/php/etc/php.ini
 
-sed -i '1871a\zend_extension=\/usr\/local\/php\/lib\/php\/extensions\/no-debug-zts-20121212\/opcache.so' /usr/local/php/php.ini
-sed -i 's/disable_functions =/disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_alter,ini_restore,dl,pfsockopen,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,fsocket/g' /usr/local/php/php.ini
+sed -i '1871a\zend_extension=\/usr\/local\/php\/lib\/php\/extensions\/no-debug-zts-20121212\/opcache.so' /usr/local/php/etc/php.ini
+sed -i 's/disable_functions =/disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_alter,ini_restore,dl,pfsockopen,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,fsocket/g' /usr/local/php/etc/php.ini
 
 cd $source_dir
 tar -zxvf p.tar.gz
