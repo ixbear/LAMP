@@ -427,7 +427,9 @@ cd php-5.5.5
 make ZEND_EXTRA_LIBS='-liconv'
 make install
 #安装完成以后会在/usr/local/apache2/modules目录下生成libphp5.so，同时执行apachectl -M可以看到已支持php5模块
-#同时会向httpd.conf中写入一行LoadModule php5_module
+#同时会向httpd.conf中写入一行LoadModule php5_module，如果打算使用php-fpm，此行可注销
+#一篇配置php-fpm很好的文档 http://wiki.apache.org/httpd/PHP-FPM
+
 cp php.ini-production /usr/local/php/etc/php.ini
 ln -s /usr/local/php/etc/php.ini /etc/php.ini
 ln -s /usr/local/php/bin/php /usr/bin/php
