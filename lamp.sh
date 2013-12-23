@@ -429,7 +429,7 @@ make install
 #安装完成以后会在/usr/local/apache2/modules目录下生成libphp5.so，同时执行apachectl -M可以看到已支持php5模块
 #同时会向httpd.conf中写入一行LoadModule php5_module
 cp php.ini-production /usr/local/php/etc/php.ini
-ln -s /usr/local/php/php.ini /etc/php.ini
+ln -s /usr/local/php/etc/php.ini /etc/php.ini
 ln -s /usr/local/php/bin/php /usr/bin/php
 ln -s /usr/local/php/bin/phpize /usr/bin/phpize
 
