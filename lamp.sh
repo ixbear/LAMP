@@ -348,15 +348,17 @@ sed -i 's,index.html,index.html index.php,g' /usr/local/apache2/conf/httpd.conf
 sed -i 's,AllowOverride None,AllowOverride All,g' /usr/local/apache2/conf/httpd.conf   #开启伪静态
 sed -i 's,#LoadModule rewrite_module,LoadModule rewrite_module,g' /usr/local/apache2/conf/httpd.conf   #开启伪静态
 sed -i 's,Options Indexes FollowSymLinks,Options FollowSymLinks,g' /usr/local/apache2/conf/httpd.conf  #关闭目录浏览
-#开启php-fpm
-sed -i 's,#LoadModule proxy_module modules/mod_proxy.so,LoadModule proxy_module modules/mod_proxy.so,g' /usr/local/apache2/conf/httpd.conf
-sed -i 's,#LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so,LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so,g' /usr/local/apache2/conf/httpd.conf
+
 sed -i "s,#ServerName www.example.com:80,ServerName $hostname:80,g" /usr/local/apache2/conf/httpd.conf
 sed -i "s,ServerName www.example.com:80,ServerName $hostname:80,g" /usr/local/apache2/conf/httpd.conf
 sed -i "s,ServerName www.example.com:443,ServerName $hostname:443,g" /usr/local/apache2/conf/extra/httpd-ssl.conf
 sed -i "s,ServerAdmin you@example.com,ServerAdmin $admin_email,g" /usr/local/apache2/conf/httpd.conf
 sed -i "s,ServerAdmin you@example.com,ServerAdmin $admin_email,g" /usr/local/apache2/conf/extra/httpd-ssl.conf
 #echo "AddType application/x-httpd-php .php .php3" >> /usr/local/apache2/conf/httpd.conf
+#开启php-fpm
+sed -i 's,#LoadModule proxy_module modules/mod_proxy.so,LoadModule proxy_module modules/mod_proxy.so,g' /usr/local/apache2/conf/httpd.conf
+sed -i 's,#LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so,LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so,g' /usr/local/apache2/conf/httpd.conf
+sed -i '/ServerName/aProxyPassMatch ^/(.*\.php(/.*)?)$ fcgi://127.0.0.1:9000/home/wwwroot/' /usr/local/apache2/conf/httpd.conf
 sed -i 's,/usr/local/apache2/htdocs,/home/wwwroot,g' /usr/local/apache2/conf/httpd.conf
 sed -i 's,/usr/local/apache2/docs,/home/wwwroot,g' /usr/local/apache2/conf/extra/httpd-ssl.conf
 sed -i 's,/usr/local/apache2/docs,/home/wwwroot,g' /usr/local/apache2/conf/extra/httpd-vhosts.conf
@@ -460,6 +462,8 @@ sed -i 's/;opcache.fast_shutdown=0/opcache.fast_shutdown=1/g' /usr/local/php/etc
 sed -i '1871a\zend_extension=\/usr\/local\/php\/lib\/php\/extensions\/no-debug-zts-20121212\/opcache.so' /usr/local/php/etc/php.ini
 sed -i 's/disable_functions =/disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_alter,ini_restore,dl,pfsockopen,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,fsocket/g' /usr/local/php/etc/php.ini
 
+chkconfig --level 2345 php-fpm on
+
 cd $source_dir
 tar -zxvf p.tar.gz
 cp p.php /home/wwwroot
@@ -528,6 +532,7 @@ echo ""
 
 ## Start services ##
 /etc/init.d/mysqld restart
+/etc/init.d/php-fpm restart
 /etc/init.d/httpd restart
 
 ## Completed ##
