@@ -348,13 +348,15 @@ sed -i 's,index.html,index.html index.php,g' /usr/local/apache2/conf/httpd.conf
 sed -i 's,AllowOverride None,AllowOverride All,g' /usr/local/apache2/conf/httpd.conf   #开启伪静态
 sed -i 's,#LoadModule rewrite_module,LoadModule rewrite_module,g' /usr/local/apache2/conf/httpd.conf   #开启伪静态
 sed -i 's,Options Indexes FollowSymLinks,Options FollowSymLinks,g' /usr/local/apache2/conf/httpd.conf  #关闭目录浏览
-
+#开启php-fpm
+sed -i 's,#LoadModule proxy_module modules/mod_proxy.so,LoadModule proxy_module modules/mod_proxy.so,g' /usr/local/apache2/conf/httpd.conf
+sed -i 's,#LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so,LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so,g' /usr/local/apache2/conf/httpd.conf
 sed -i "s,#ServerName www.example.com:80,ServerName $hostname:80,g" /usr/local/apache2/conf/httpd.conf
 sed -i "s,ServerName www.example.com:80,ServerName $hostname:80,g" /usr/local/apache2/conf/httpd.conf
 sed -i "s,ServerName www.example.com:443,ServerName $hostname:443,g" /usr/local/apache2/conf/extra/httpd-ssl.conf
 sed -i "s,ServerAdmin you@example.com,ServerAdmin $admin_email,g" /usr/local/apache2/conf/httpd.conf
 sed -i "s,ServerAdmin you@example.com,ServerAdmin $admin_email,g" /usr/local/apache2/conf/extra/httpd-ssl.conf
-echo "AddType application/x-httpd-php .php .php3" >> /usr/local/apache2/conf/httpd.conf
+#echo "AddType application/x-httpd-php .php .php3" >> /usr/local/apache2/conf/httpd.conf
 sed -i 's,/usr/local/apache2/htdocs,/home/wwwroot,g' /usr/local/apache2/conf/httpd.conf
 sed -i 's,/usr/local/apache2/docs,/home/wwwroot,g' /usr/local/apache2/conf/extra/httpd-ssl.conf
 sed -i 's,/usr/local/apache2/docs,/home/wwwroot,g' /usr/local/apache2/conf/extra/httpd-vhosts.conf
@@ -430,11 +432,16 @@ make install
 #同时会向httpd.conf中写入一行LoadModule php5_module，如果打算使用php-fpm，此行可注销
 #一篇配置php-fpm很好的文档 http://wiki.apache.org/httpd/PHP-FPM
 
+cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
+chmod +x /etc/init.d/php-fpm
+cp sapi/fpm/php-fpm.conf /usr/local/php/etc/
 cp php.ini-production /usr/local/php/etc/php.ini
 ln -s /usr/local/php/etc/php.ini /etc/php.ini
+ln -s /usr/local/php/etc/php.ini /usr/local/php/php.ini
 ln -s /usr/local/php/bin/php /usr/bin/php
 ln -s /usr/local/php/bin/phpize /usr/bin/phpize
 
+sed -i 's,LoadModule php5_module,#LoadModule php5_module,g' /usr/local/apache2/conf/httpd.conf
 sed -i 's/post_max_size = 8M/post_max_size = 10M/g' /usr/local/php/etc/php.ini
 sed -i 's/memory_limit = 128M/memory_limit = 64M/g' /usr/local/php/etc/php.ini
 sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 10M/g' /usr/local/php/etc/php.ini
