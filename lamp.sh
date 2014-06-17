@@ -349,7 +349,7 @@ sed -i 's,AllowOverride None,AllowOverride All,g' /usr/local/apache2/conf/httpd.
 sed -i 's,#LoadModule rewrite_module,LoadModule rewrite_module,g' /usr/local/apache2/conf/httpd.conf   #开启伪静态
 sed -i 's,Options Indexes FollowSymLinks,Options FollowSymLinks,g' /usr/local/apache2/conf/httpd.conf  #关闭目录浏览
 sed -i 's,#Include conf/extra/httpd-vhosts.conf,Include conf/extra/httpd-vhosts.conf,g' /usr/local/apache2/conf/httpd.conf
-sed -i 's,#LoadModule vhost_alias_module modules/mod_vhost_alias.so,LoadModule vhost_alias_module modules/mod_vhost_alias.so,g' /usr/local/apache2/conf/httpd.conf
+#sed -i 's,#LoadModule vhost_alias_module modules/mod_vhost_alias.so,LoadModule vhost_alias_module modules/mod_vhost_alias.so,g' /usr/local/apache2/conf/httpd.conf
 
 sed -i "s,ServerAdmin you@example.com,ServerAdmin $admin_email,g" /usr/local/apache2/conf/httpd.conf
 sed -i "s,#ServerName www.example.com:80,ServerName $hostname:80,g" /usr/local/apache2/conf/httpd.conf
@@ -364,6 +364,22 @@ sed -i '/ServerName/aProxyPassMatch ^/(.*\.php)$ fcgi://127.0.0.1:9000/home/wwwr
 sed -i 's,/usr/local/apache2/htdocs,/home/wwwroot,g' /usr/local/apache2/conf/httpd.conf
 sed -i 's,/usr/local/apache2/docs,/home/wwwroot,g' /usr/local/apache2/conf/extra/httpd-ssl.conf
 sed -i 's,/usr/local/apache2/docs,/home/wwwroot,g' /usr/local/apache2/conf/extra/httpd-vhosts.conf
+
+
+#enabled virtual_hosts
+cat /dev/null > /usr/local/apache2/conf/extra/httpd-vhosts.conf
+cat > /usr/local/apache2/conf/extra/httpd-vhosts.conf<<eof
+<VirtualHost $ip:80>
+    ServerAdmin webmaster@dummy-host.example.com
+    DocumentRoot "/home/wwwroot/default"
+    ProxyRequests Off
+    ProxyPassMatch ^/(.*\.php)$ fcgi://127.0.0.1:9000/home/wwwroot/default/$1
+    ServerName www.example.com
+    ErrorLog "logs/default-error_log"
+    CustomLog "logs/default-access_log" common
+</VirtualHost>
+eof
+
 chown -R www:www /home/wwwroot
 
 #########################Install Mysql#########################
