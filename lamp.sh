@@ -373,7 +373,7 @@ cat > /usr/local/apache2/conf/extra/httpd-vhosts.conf<<eof
     ServerAdmin webmaster@dummy-host.example.com
     DocumentRoot "/home/wwwroot/default"
     ProxyRequests Off
-    ProxyPassMatch ^/(.*\.php)$ fcgi://127.0.0.1:9000/home/wwwroot/default/$1
+    ProxyPassMatch ^/(.*\.php)$ fcgi://127.0.0.1:9000/home/wwwroot/default/\$1
     ServerName www.example.com
     ErrorLog "logs/default-error_log"
     CustomLog "logs/default-access_log" common
