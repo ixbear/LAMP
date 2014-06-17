@@ -485,8 +485,11 @@ sed -i 's,group = nobody,group = www,g' /usr/local/php/etc/php-fpm.conf
 sed -i 's,;pid = run/php-fpm.pid,pid = /usr/local/php/var/run/php-fpm.pid,g' /usr/local/php/etc/php-fpm.conf
 sed -i 's,;error_log = log/php-fpm.log,error_log = /usr/local/php/var/log/php-fpm.log,g' /usr/local/php/etc/php-fpm.conf
 sed -i 's,;log_level = notice,log_level = notice,g' /usr/local/php/etc/php-fpm.conf
-sed -i 's,,,g' /usr/local/php/etc/php-fpm.conf
-sed -i 's,;request_terminate_timeout = 0,request_terminate_timeout = 60,g' /usr/local/php/etc/php-fpm.conf
+sed -i 's,;request_terminate_timeout = 0,request_terminate_timeout = 60s,g' /usr/local/php/etc/php-fpm.conf
+
+#some clean work
+mv /usr/local/php/etc/php-fpm.conf /usr/local/php/etc/php-fpm.conf.bak
+grep -v '^;' /usr/local/php/etc/php-fpm.conf.bak | grep -v '^$' | grep -v '^[[:space:]]$' > /usr/local/php/etc/php-fpm.conf
 
 chkconfig --level 2345 php-fpm on
 
