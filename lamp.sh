@@ -167,10 +167,10 @@ else
   exit 1
 fi
 
-if [ -s mysql-5.5.34.tar.gz ]; then
-  echo "mysql-5.5.34.tar.gz [found]"
+if [ -s mysql-5.5.37.tar.gz ]; then
+  echo "mysql-5.5.37.tar.gz [found]"
 else
-  echo "mysql-5.5.34.tar.gz [not found] [error]"
+  echo "mysql-5.5.37.tar.gz [not found] [error]"
   exit 1
 fi
 
@@ -375,8 +375,8 @@ groupadd mysql
 useradd -r -g mysql mysql -s /sbin/nologin -d /dev/null
 
 cd $source_dir
-tar -zxvf mysql-5.5.34.tar.gz
-cd mysql-5.5.34
+tar -zxvf mysql-5.5.37.tar.gz
+cd mysql-5.5.37
 cmake -DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/usr/local/mysql/data -DMYSQL_UNIX_ADDR=/tmp/mysql.sock -DDEFAULT_CHARSET=utf8 -DDEFAULT_COLLATION=utf8_general_ci -DWITH_EXTRA_CHARSETS:STRING=utf8,gbk -DWITH_INNOBASE_STORAGE_ENGINE=1 -DWITH_READLINE=1 -DENABLED_LOCAL_INFILE=1 -DMYSQL_USER=mysql -DWITH_DEBUG=0 -DMYSQL_TCP_PORT=3306
 make && make install
 
