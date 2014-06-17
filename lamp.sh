@@ -351,16 +351,16 @@ sed -i 's,Options Indexes FollowSymLinks,Options FollowSymLinks,g' /usr/local/ap
 sed -i 's,#Include conf/extra/httpd-vhosts.conf,Include conf/extra/httpd-vhosts.conf,g' /usr/local/apache2/conf/httpd.conf
 sed -i 's,#LoadModule vhost_alias_module modules/mod_vhost_alias.so,LoadModule vhost_alias_module modules/mod_vhost_alias.so,g' /usr/local/apache2/conf/httpd.conf
 
-sed -i "s,#ServerName www.example.com:80,ServerName $hostname:80,g" /usr/local/apache2/conf/httpd.conf
-sed -i "s,ServerName www.example.com:80,ServerName $hostname:80,g" /usr/local/apache2/conf/httpd.conf
-sed -i "s,ServerName www.example.com:443,ServerName $hostname:443,g" /usr/local/apache2/conf/extra/httpd-ssl.conf
 sed -i "s,ServerAdmin you@example.com,ServerAdmin $admin_email,g" /usr/local/apache2/conf/httpd.conf
+sed -i "s,#ServerName www.example.com:80,ServerName $hostname:80,g" /usr/local/apache2/conf/httpd.conf
+sed -i "s,ServerName www.example.com:443,ServerName $hostname:443,g" /usr/local/apache2/conf/extra/httpd-ssl.conf
 sed -i "s,ServerAdmin you@example.com,ServerAdmin $admin_email,g" /usr/local/apache2/conf/extra/httpd-ssl.conf
+
 #echo "AddType application/x-httpd-php .php .php3" >> /usr/local/apache2/conf/httpd.conf
 #开启php-fpm
 sed -i 's,#LoadModule proxy_module modules/mod_proxy.so,LoadModule proxy_module modules/mod_proxy.so,g' /usr/local/apache2/conf/httpd.conf
 sed -i 's,#LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so,LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so,g' /usr/local/apache2/conf/httpd.conf
-sed -i '/ServerName/aProxyPassMatch ^/(.*\.php(/.*)?)$ fcgi://127.0.0.1:9000/home/wwwroot/' /usr/local/apache2/conf/httpd.conf
+sed -i '/ServerName $hostname:80/aProxyPassMatch ^/(.*\.php(/.*)?)$ fcgi://127.0.0.1:9000/home/wwwroot/' /usr/local/apache2/conf/httpd.conf
 sed -i 's,/usr/local/apache2/htdocs,/home/wwwroot,g' /usr/local/apache2/conf/httpd.conf
 sed -i 's,/usr/local/apache2/docs,/home/wwwroot,g' /usr/local/apache2/conf/extra/httpd-ssl.conf
 sed -i 's,/usr/local/apache2/docs,/home/wwwroot,g' /usr/local/apache2/conf/extra/httpd-vhosts.conf
