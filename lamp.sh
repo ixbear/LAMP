@@ -482,6 +482,7 @@ sed -i 's/disable_functions =/disable_functions = passthru,exec,system,chroot,ch
 
 sed -i 's,user = nobody,user = www,g' /usr/local/php/etc/php-fpm.conf
 sed -i 's,group = nobody,group = www,g' /usr/local/php/etc/php-fpm.conf
+sed -i 's,;request_terminate_timeout = 0,request_terminate_timeout = 60,g' /usr/local/php/etc/php-fpm.conf
 
 chkconfig --level 2345 php-fpm on
 
