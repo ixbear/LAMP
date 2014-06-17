@@ -480,6 +480,9 @@ sed -i 's/;opcache.fast_shutdown=0/opcache.fast_shutdown=1/g' /usr/local/php/etc
 sed -i '1871a\zend_extension=\/usr\/local\/php\/lib\/php\/extensions\/no-debug-zts-20121212\/opcache.so' /usr/local/php/etc/php.ini
 sed -i 's/disable_functions =/disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_alter,ini_restore,dl,pfsockopen,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,fsocket/g' /usr/local/php/etc/php.ini
 
+sed -i 's,user = nobody,user = www,g' /usr/local/php/etc/php-fpm.conf
+sed -i 's,group = nobody,group = www,g' /usr/local/php/etc/php-fpm.conf
+
 chkconfig --level 2345 php-fpm on
 
 cd $source_dir
