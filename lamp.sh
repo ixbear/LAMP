@@ -348,6 +348,7 @@ sed -i 's,index.html,index.html index.php,g' /usr/local/apache2/conf/httpd.conf
 sed -i 's,AllowOverride None,AllowOverride All,g' /usr/local/apache2/conf/httpd.conf   #开启伪静态
 sed -i 's,#LoadModule rewrite_module,LoadModule rewrite_module,g' /usr/local/apache2/conf/httpd.conf   #开启伪静态
 sed -i 's,Options Indexes FollowSymLinks,Options FollowSymLinks,g' /usr/local/apache2/conf/httpd.conf  #关闭目录浏览
+sed -i 's,#Include conf/extra/httpd-vhosts.conf,Include conf/extra/httpd-vhosts.conf,g' /usr/local/apache2/conf/httpd.conf
 
 sed -i "s,#ServerName www.example.com:80,ServerName $hostname:80,g" /usr/local/apache2/conf/httpd.conf
 sed -i "s,ServerName www.example.com:80,ServerName $hostname:80,g" /usr/local/apache2/conf/httpd.conf
