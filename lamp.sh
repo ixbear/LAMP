@@ -466,6 +466,8 @@ sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 10M/g' /usr/local/php/e
 sed -i 's#;date.timezone =#date.timezone = "Asia/Shanghai"#g' /usr/local/php/etc/php.ini
 sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /usr/local/php/etc/php.ini
 sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/etc/php.ini
+sed -i 's,enable_dl = Off,enable_dl = On,g' /usr/local/php/etc/php.ini
+sed -i 's,display_errors = Off,display_errors = On,g' /usr/local/php/etc/php.ini
 
 sed -i 's/;opcache.enable=0/opcache.enable=1/g' /usr/local/php/etc/php.ini
 sed -i 's/;opcache.enable_cli=0/opcache.enable_cli=1/g' /usr/local/php/etc/php.ini
