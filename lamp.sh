@@ -466,9 +466,9 @@ chkconfig --level 2345 php-fpm on
 
 cd $source_dir
 tar -zxvf p.tar.gz
-cp p.php /home/wwwroot
+cp p.php /home/wwwroot/default/
 
-cat >/home/wwwroot/index.html<<eof
+cat >/home/wwwroot/default/index.html<<eof
 <!DOCTYPE html>
 <html>
 <head>
@@ -493,15 +493,15 @@ eof
 #########################Install phpMyAdmin#########################
 ##  ##
 mkdir /home/wwwroot
-if [ -d /home/wwwroot/pma ]; then
-	mv /home/wwwroot/pma /home/wwwroot/pma_old
+if [ -d /home/wwwroot/default/pma ]; then
+	mv /home/wwwroot/default/pma /home/wwwroot/default/pma_old
 fi
 
 cd $source_dir
 tar -zxvf phpMyAdmin-4.0.8-all-languages.tar.gz
-mv phpMyAdmin-4.0.8-all-languages /home/wwwroot/pma
-cp -f /home/wwwroot/pma/config.sample.inc.php /home/wwwroot/pma/config.inc.php
-sed -i "s#\['blowfish_secret'\] = ''#['blowfish_secret'] = 'i@zhukun.net'#g" /home/wwwroot/pma/config.inc.php
+mv phpMyAdmin-4.0.8-all-languages /home/wwwroot/default/pma
+cp -f /home/wwwroot/default/pma/config.sample.inc.php /home/wwwroot/default/pma/config.inc.php
+sed -i "s#\['blowfish_secret'\] = ''#['blowfish_secret'] = 'i@zhukun.net'#g" /home/wwwroot/default/pma/config.inc.php
 
 ## others ##
 mkdir /home/wwwlogs
