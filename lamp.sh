@@ -337,7 +337,7 @@ sed -i '1a\# chkconfig: 35 85 15' /etc/init.d/httpd
 sed -i '2a\# description: Apache httpd' /etc/init.d/httpd
 chkconfig --level 2345 httpd on
 
-mkdir -p /home/wwwroot
+mkdir -p /home/wwwroot/default
 rm -rf /usr/local/apache2/htdocs
 ln -s /home/wwwroot /usr/local/apache2/htdocs
 groupadd www
@@ -510,7 +510,6 @@ eof
 
 #########################Install phpMyAdmin#########################
 ##  ##
-mkdir /home/wwwroot
 if [ -d /home/wwwroot/default/pma ]; then
 	mv /home/wwwroot/default/pma /home/wwwroot/default/pma_old
 fi
