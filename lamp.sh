@@ -366,8 +366,7 @@ sed -i 's,/usr/local/apache2/htdocs,/home/wwwroot,g' /usr/local/apache2/conf/htt
 sed -i 's,/usr/local/apache2/docs,/home/wwwroot,g' /usr/local/apache2/conf/extra/httpd-ssl.conf
 sed -i 's,/usr/local/apache2/docs,/home/wwwroot,g' /usr/local/apache2/conf/extra/httpd-vhosts.conf
 
-
-#enabled virtual_hosts
+#enable virtual_hosts
 cat /dev/null > /usr/local/apache2/conf/extra/httpd-vhosts.conf
 cat > /usr/local/apache2/conf/extra/httpd-vhosts.conf<<eof
 <VirtualHost $ip:80>
