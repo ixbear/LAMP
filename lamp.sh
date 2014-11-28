@@ -553,7 +553,7 @@ cd $source_dir
 tar -zxvf phpMyAdmin-4.0.8-all-languages.tar.gz
 mv phpMyAdmin-4.0.8-all-languages /home/wwwroot/default/pma
 cp -f /home/wwwroot/default/pma/config.sample.inc.php /home/wwwroot/default/pma/config.inc.php
-sed -i "s#\['blowfish_secret'\] = ''#['blowfish_secret'] = 'i@zhukun.net'#g" /home/wwwroot/default/pma/config.inc.php
+sed -i "/^\$cfg\['blowfish_secret'\]/c\$cfg\['blowfish_secret'\] = 'i@zhukun.net'" /home/wwwroot/default/pma/config.inc.php
 
 ## others ##
 mkdir /home/wwwlogs
