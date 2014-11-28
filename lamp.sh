@@ -437,7 +437,31 @@ rm -f /tmp/mysql_sec_script
 cd $source_dir
 tar -zxvf php-5.5.5.tar.gz
 cd php-5.5.5
-./configure --prefix=/usr/local/php --with-apxs2=/usr/local/apache2/bin/apxs --with-config-file-path=/usr/local/php --with-mysql=/usr/local/mysql --with-mysqli=/usr/local/mysql/bin/mysql_config --with-iconv --with-curl=ext/curl --with-gd --with-mcrypt --with-gettext --with-mhash --with-zlib --with-xmlrpc --enable-mbstring --enable-soap --enable-mbregex --enable-zip --enable-xml --enable-libxml --enable-bcmath --enable-fpm --without-pear --enable-opcache
+./configure --prefix=/usr/local/php \
+--with-apxs2=/usr/local/apache2/bin/apxs \
+--with-config-file-path=/usr/local/php \
+--with-mysql=/usr/local/mysql \
+--with-mysqli=/usr/local/mysql/bin/mysql_config \
+--with-curl=ext/curl \
+--with-iconv \
+--with-gd \
+--with-mcrypt \
+--with-bz2 \
+--with-gettext \
+--with-mhash \
+--with-zlib \
+--with-xmlrpc \
+--enable-bcmath \
+--enable-fpm \
+--enable-mbstring \
+--enable-soap \
+--enable-mbregex \
+--enable-sockets \
+--enable-zip \
+--enable-xml \
+--enable-libxml \
+--without-pear \
+--enable-opcache
 #php 5.5 已集成Zend Optimizer+，Optimizer+ 于 2013年3月中旬改名为 Opcache，配置时加上--enable-opcache即可。Zend Opcache 与 eaccelerator 相冲突。
 #php 5.5 安装以后默认没有php.ini，把php.ini-production复制成为安装目录下的php.ini。
 #经测试如果--with-config-file-path，主配置文件也一样位于安装根目录
@@ -460,9 +484,9 @@ ln -s /usr/local/php/bin/php /usr/bin/php
 ln -s /usr/local/php/bin/phpize /usr/bin/phpize
 
 sed -i 's,LoadModule php5_module,#LoadModule php5_module,g' /usr/local/apache2/conf/httpd.conf
-sed -i 's/post_max_size = 8M/post_max_size = 10M/g' /usr/local/php/etc/php.ini
+sed -i 's/post_max_size = 8M/post_max_size = 30M/g' /usr/local/php/etc/php.ini
 sed -i 's/memory_limit = 128M/memory_limit = 64M/g' /usr/local/php/etc/php.ini
-sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 10M/g' /usr/local/php/etc/php.ini
+sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 30M/g' /usr/local/php/etc/php.ini
 sed -i 's#;date.timezone =#date.timezone = "Asia/Shanghai"#g' /usr/local/php/etc/php.ini
 sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /usr/local/php/etc/php.ini
 sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/etc/php.ini
