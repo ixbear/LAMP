@@ -123,7 +123,7 @@ wget -c http://sourceforge.net/projects/mcrypt/files/MCrypt/2.6.8/mcrypt-2.6.8.t
 wget -c http://sourceforge.net/projects/mhash/files/mhash/0.9.9.9/mhash-0.9.9.9.tar.gz
 wget -c http://us2.php.net/distributions/php-5.5.5.tar.gz
 wget -c http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.0.8/phpMyAdmin-4.0.8-all-languages.tar.gz
-wget -c http://soft.vpser.net/lnmp/lnmp0.9-full/p.tar.gz
+wget -c http://soft.vpser.net/lnmp/lnmp1.2-full/src/p.tar.gz
 
 if [ -s cmake-2.8.4.tar.gz ]; then
   echo "cmake-2.8.4.tar.gz [found]"
