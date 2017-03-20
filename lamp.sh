@@ -122,7 +122,7 @@ wget -c http://sourceforge.net/projects/mcrypt/files/Libmcrypt/2.5.8/libmcrypt-2
 wget -c http://sourceforge.net/projects/mcrypt/files/MCrypt/2.6.8/mcrypt-2.6.8.tar.gz
 wget -c http://sourceforge.net/projects/mhash/files/mhash/0.9.9.9/mhash-0.9.9.9.tar.gz
 wget -c http://us2.php.net/distributions/php-5.5.5.tar.gz
-wget -c http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.0.8/phpMyAdmin-4.0.8-all-languages.tar.gz
+wget -c https://files.phpmyadmin.net/phpMyAdmin/4.6.6/phpMyAdmin-4.6.6-all-languages.zip
 wget -c http://soft.vpser.net/lnmp/lnmp1.2-full/src/p.tar.gz
 
 if [ -s cmake-2.8.4.tar.gz ]; then
@@ -202,10 +202,10 @@ else
   exit 1
 fi
 
-if [ -s phpMyAdmin-4.0.8-all-languages.tar.gz ]; then
-  echo "phpMyAdmin-4.0.8-all-languages.tar.gz [found]"
+if [ -s phpMyAdmin-4.6.6-all-languages.zip ]; then
+  echo "phpMyAdmin-4.6.6-all-languages.zip [found]"
 else
-  echo "phpMyAdmin-4.0.8-all-languages.tar.gz [not found] [error]"
+  echo "phpMyAdmin-4.6.6-all-languages.zip [not found] [error]"
   exit 1
 fi
 
@@ -550,8 +550,8 @@ if [ -d /home/wwwroot/default/pma ]; then
 fi
 
 cd $source_dir
-tar -zxvf phpMyAdmin-4.0.8-all-languages.tar.gz
-mv phpMyAdmin-4.0.8-all-languages /home/wwwroot/default/pma
+tar -zxvf https://files.phpmyadmin.net/phpMyAdmin/4.6.6/phpMyAdmin-4.6.6-all-languages.zip
+mv phpMyAdmin-4.6.6-all-languages /home/wwwroot/default/pma
 cp -f /home/wwwroot/default/pma/config.sample.inc.php /home/wwwroot/default/pma/config.inc.php
 sed -i "/^\$cfg\['blowfish_secret'\]/c\$cfg\['blowfish_secret'\] = 'i@zhukun.net';" /home/wwwroot/default/pma/config.inc.php
 
