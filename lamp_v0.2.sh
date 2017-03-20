@@ -461,8 +461,8 @@ if [ -d /home/wwwroot/default/pma ]; then
 fi
 
 cd $source_dir/src
-unzip phpMyAdmin-4.0.8-all-languages.zip
-mv phpMyAdmin-4.0.8-all-languages /home/wwwroot/default/pma
+unzip phpMyAdmin-4.6.6-all-languages.zip
+mv phpMyAdmin-4.6.6-all-languages /home/wwwroot/default/pma
 cp -f /home/wwwroot/default/pma/config.sample.inc.php /home/wwwroot/default/pma/config.inc.php
 sed -i "/^\$cfg\['blowfish_secret'\]/c\$cfg\['blowfish_secret'\] = 'i@zhukun.net';" /home/wwwroot/default/pma/config.inc.php
 
