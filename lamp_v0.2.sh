@@ -111,7 +111,7 @@ do yum -y install $packages; done
 
 cd $source_dir
 ## Download source files ##
-wget -c http://www.zhukun.net/lamp_src__zhukun.net_20160107.tar.gz
+wget -c http://www.zhukun.net/lamp_src__zhukun.net_20160107.tar.gz --no-check-certificate
 if [ -s lamp_src__zhukun.net_20160107.tar.gz ]; then
   echo "lamp_src__zhukun.net_20160107.tar.gz [found]"
 else
