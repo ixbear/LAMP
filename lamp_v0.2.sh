@@ -111,14 +111,14 @@ do yum -y install $packages; done
 
 cd $source_dir
 ## Download source files ##
-wget -c http://45.79.80.99/lamp-20160107.tar.gz
-if [ -s lamp-20160107.tar.gz ]; then
-  echo "lamp-20160107.tar.gz [found]"
+wget -c http://www.zhukun.net/lamp_src__zhukun.net_20160107.tar.gz
+if [ -s lamp_src__zhukun.net_20160107.tar.gz ]; then
+  echo "lamp_src__zhukun.net_20160107.tar.gz [found]"
 else
-  echo "lamp-20160107.tar.gz [not found] [error]"
+  echo "lamp_src__zhukun.net_20160107.tar.gz [not found] [error]"
   exit 1
 fi
-tar zxvf lamp-20160107.tar.gz
+tar zxvf lamp_src__zhukun.net_20160107.tar.gz
 
 clear
 echo ""
