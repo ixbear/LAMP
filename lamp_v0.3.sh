@@ -118,6 +118,7 @@ wget -c http://sourceforge.net/projects/pcre/files/pcre/8.41/pcre-8.41.tar.gz
 wget -c http://archive.apache.org/dist/httpd/httpd-2.4.29.tar.gz
 #wget -c http://downloads.mysql.com/archives/get/file/mysql-5.7.19.tar.gz
 wget -c http://downloads.mysql.com/archives/get/file/mysql-boost-5.7.19.tar.gz
+wget -c http://php.net/distributions/php-7.1.11.tar.gz
 #wget -c http://www.zhukun.net/lamp_src__zhukun.net_20160107.tar.gz --no-check-certificate
 if [ -s lamp_src__zhukun.net_20160107.tar.gz ]; then
   echo "lamp_src__zhukun.net_20160107.tar.gz [found]"
@@ -296,29 +297,217 @@ cmake \
 make && make install
 
 chown -R mysql:mysql /usr/local/mysql
+#--initialize-insecure means root@localhost is created with an empty password
 /usr/local/mysql/bin/mysqld --initialize-insecure --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data --user=mysql
 chown -R mysql:mysql /usr/local/mysql/data
 
-cp support-files/my-medium.cnf /etc/my.cnf
-cp support-files/mysql.server /etc/init.d/mysqld
+cp /usr/local/mysql/support-files/mysql.server /etc/init.d/mysqld
 chmod 755 /etc/init.d/mysqld
 chkconfig --add mysqld && chkconfig --level 2345 mysqld on
-sed -i 's/skip-locking/skip-external-locking/g' /etc/my.cnf
-sed -i 's/log-bin=mysql-bin/#log-bin=mysql-bin/g' /etc/my.cnf
-sed -i 's/binlog_format=mixed/#binlog_format=mixed/g' /etc/my.cnf
 
-ln -s /usr/local/mysql/bin/mysql /usr/bin/mysql
-ln -s /usr/local/mysql/bin/mysqldump /usr/bin/mysqldump
-ln -s /usr/local/mysql/bin/myisamchk /usr/bin/myisamchk
+#according https://dev.mysql.com/doc/refman/5.7/en/server-configuration-defaults.html
+#there is no my-default.ini included from MySQL 5.7.18
+#so let's create one
+cat > /etc/my.cnf<<EOF
+[client]
+#password   = your_password
+port        = 3306
+socket      = /tmp/mysql.sock
+
+[mysqld]
+port        = 3306
+socket      = /tmp/mysql.sock
+datadir = /usr/local/mysql/data
+skip-external-locking
+key_buffer_size = 16M
+max_allowed_packet = 1M
+table_open_cache = 64
+sort_buffer_size = 512K
+net_buffer_length = 8K
+read_buffer_size = 256K
+read_rnd_buffer_size = 512K
+myisam_sort_buffer_size = 8M
+thread_cache_size = 8
+query_cache_size = 8M
+tmp_table_size = 16M
+performance_schema_max_table_instances = 500
+
+explicit_defaults_for_timestamp = true
+#skip-networking
+max_connections = 500
+max_connect_errors = 100
+open_files_limit = 65535
+
+log-bin=mysql-bin
+binlog_format=mixed
+server-id   = 1
+expire_logs_days = 10
+early-plugin-load = ""
+
+#loose-innodb-trx=0
+#loose-innodb-locks=0
+#loose-innodb-lock-waits=0
+#loose-innodb-cmp=0
+#loose-innodb-cmp-per-index=0
+#loose-innodb-cmp-per-index-reset=0
+#loose-innodb-cmp-reset=0
+#loose-innodb-cmpmem=0
+#loose-innodb-cmpmem-reset=0
+#loose-innodb-buffer-page=0
+#loose-innodb-buffer-page-lru=0
+#loose-innodb-buffer-pool-stats=0
+#loose-innodb-metrics=0
+#loose-innodb-ft-default-stopword=0
+#loose-innodb-ft-inserted=0
+#loose-innodb-ft-deleted=0
+#loose-innodb-ft-being-deleted=0
+#loose-innodb-ft-config=0
+#loose-innodb-ft-index-cache=0
+#loose-innodb-ft-index-table=0
+#loose-innodb-sys-tables=0
+#loose-innodb-sys-tablestats=0
+#loose-innodb-sys-indexes=0
+#loose-innodb-sys-columns=0
+#loose-innodb-sys-fields=0
+#loose-innodb-sys-foreign=0
+#loose-innodb-sys-foreign-cols=0
+
+default_storage_engine = InnoDB
+#innodb_file_per_table = 1
+#innodb_data_home_dir = /usr/local/mysql/data
+#innodb_data_file_path = ibdata1:10M:autoextend
+#innodb_log_group_home_dir = /usr/local/mysql/data
+#innodb_buffer_pool_size = 16M
+#innodb_log_file_size = 5M
+#innodb_log_buffer_size = 8M
+#innodb_flush_log_at_trx_commit = 1
+#innodb_lock_wait_timeout = 50
+
+[mysqldump]
+quick
+max_allowed_packet = 16M
+
+[mysql]
+no-auto-rehash
+
+[myisamchk]
+key_buffer_size = 20M
+sort_buffer_size = 20M
+read_buffer = 2M
+write_buffer = 2M
+
+[mysqlhotcopy]
+interactive-timeout
+EOF
+
+
+#sed -i 's/skip-locking/skip-external-locking/g' /etc/my.cnf
+sed -i 's:^#innodb:innodb:g' /etc/my.cnf    #enable innodb
+
+ln -sf /usr/local/mysql/bin/mysql /usr/bin/mysql
+ln -sf /usr/local/mysql/bin/mysqldump /usr/bin/mysqldump
+ln -sf /usr/local/mysql/bin/myisamchk /usr/bin/myisamchk
+ln -sf /usr/local/mysql/bin/mysqld_safe /usr/bin/mysqld_safe
+ln -sf /usr/local/mysql/bin/mysqlcheck /usr/bin/mysqlcheck
+
+cat > /etc/ld.so.conf.d/mysql.conf<<EOF
+/usr/local/mysql/lib
+/usr/local/lib
+EOF
+ldconfig
+ln -sf /usr/local/mysql/lib/mysql /usr/lib/mysql
+ln -sf /usr/local/mysql/include/mysql /usr/include/mysql
+
+MySQL_Optimze()
+{
+    if [[ ${MemTotal} -gt 1024 && ${MemTotal} -lt 2048 ]]; then
+        sed -i "s#^key_buffer_size.*#key_buffer_size = 32M#" /etc/my.cnf
+        sed -i "s#^table_open_cache.*#table_open_cache = 128#" /etc/my.cnf
+        sed -i "s#^sort_buffer_size.*#sort_buffer_size = 768K#" /etc/my.cnf
+        sed -i "s#^read_buffer_size.*#read_buffer_size = 768K#" /etc/my.cnf
+        sed -i "s#^myisam_sort_buffer_size.*#myisam_sort_buffer_size = 8M#" /etc/my.cnf
+        sed -i "s#^thread_cache_size.*#thread_cache_size = 16#" /etc/my.cnf
+        sed -i "s#^query_cache_size.*#query_cache_size = 16M#" /etc/my.cnf
+        sed -i "s#^tmp_table_size.*#tmp_table_size = 32M#" /etc/my.cnf
+        sed -i "s#^innodb_buffer_pool_size.*#innodb_buffer_pool_size = 128M#" /etc/my.cnf
+        sed -i "s#^innodb_log_file_size.*#innodb_log_file_size = 32M#" /etc/my.cnf
+        sed -i "s#^performance_schema_max_table_instances.*#performance_schema_max_table_instances = 1000" /etc/my.cnf
+    elif [[ ${MemTotal} -ge 2048 && ${MemTotal} -lt 4096 ]]; then
+        sed -i "s#^key_buffer_size.*#key_buffer_size = 64M#" /etc/my.cnf
+        sed -i "s#^table_open_cache.*#table_open_cache = 256#" /etc/my.cnf
+        sed -i "s#^sort_buffer_size.*#sort_buffer_size = 1M#" /etc/my.cnf
+        sed -i "s#^read_buffer_size.*#read_buffer_size = 1M#" /etc/my.cnf
+        sed -i "s#^myisam_sort_buffer_size.*#myisam_sort_buffer_size = 16M#" /etc/my.cnf
+        sed -i "s#^thread_cache_size.*#thread_cache_size = 32#" /etc/my.cnf
+        sed -i "s#^query_cache_size.*#query_cache_size = 32M#" /etc/my.cnf
+        sed -i "s#^tmp_table_size.*#tmp_table_size = 64M#" /etc/my.cnf
+        sed -i "s#^innodb_buffer_pool_size.*#innodb_buffer_pool_size = 256M#" /etc/my.cnf
+        sed -i "s#^innodb_log_file_size.*#innodb_log_file_size = 64M#" /etc/my.cnf
+        sed -i "s#^performance_schema_max_table_instances.*#performance_schema_max_table_instances = 2000" /etc/my.cnf
+    elif [[ ${MemTotal} -ge 4096 && ${MemTotal} -lt 8192 ]]; then
+        sed -i "s#^key_buffer_size.*#key_buffer_size = 128M#" /etc/my.cnf
+        sed -i "s#^table_open_cache.*#table_open_cache = 512#" /etc/my.cnf
+        sed -i "s#^sort_buffer_size.*#sort_buffer_size = 2M#" /etc/my.cnf
+        sed -i "s#^read_buffer_size.*#read_buffer_size = 2M#" /etc/my.cnf
+        sed -i "s#^myisam_sort_buffer_size.*#myisam_sort_buffer_size = 32M#" /etc/my.cnf
+        sed -i "s#^thread_cache_size.*#thread_cache_size = 64#" /etc/my.cnf
+        sed -i "s#^query_cache_size.*#query_cache_size = 64M#" /etc/my.cnf
+        sed -i "s#^tmp_table_size.*#tmp_table_size = 64M#" /etc/my.cnf
+        sed -i "s#^innodb_buffer_pool_size.*#innodb_buffer_pool_size = 512M#" /etc/my.cnf
+        sed -i "s#^innodb_log_file_size.*#innodb_log_file_size = 128M#" /etc/my.cnf
+        sed -i "s#^performance_schema_max_table_instances.*#performance_schema_max_table_instances = 4000" /etc/my.cnf
+    elif [[ ${MemTotal} -ge 8192 && ${MemTotal} -lt 16384 ]]; then
+        sed -i "s#^key_buffer_size.*#key_buffer_size = 256M#" /etc/my.cnf
+        sed -i "s#^table_open_cache.*#table_open_cache = 1024#" /etc/my.cnf
+        sed -i "s#^sort_buffer_size.*#sort_buffer_size = 4M#" /etc/my.cnf
+        sed -i "s#^read_buffer_size.*#read_buffer_size = 4M#" /etc/my.cnf
+        sed -i "s#^myisam_sort_buffer_size.*#myisam_sort_buffer_size = 64M#" /etc/my.cnf
+        sed -i "s#^thread_cache_size.*#thread_cache_size = 128#" /etc/my.cnf
+        sed -i "s#^query_cache_size.*#query_cache_size = 128M#" /etc/my.cnf
+        sed -i "s#^tmp_table_size.*#tmp_table_size = 128M#" /etc/my.cnf
+        sed -i "s#^innodb_buffer_pool_size.*#innodb_buffer_pool_size = 1024M#" /etc/my.cnf
+        sed -i "s#^innodb_log_file_size.*#innodb_log_file_size = 256M#" /etc/my.cnf
+        sed -i "s#^performance_schema_max_table_instances.*#performance_schema_max_table_instances = 6000" /etc/my.cnf
+    elif [[ ${MemTotal} -ge 16384 && ${MemTotal} -lt 32768 ]]; then
+        sed -i "s#^key_buffer_size.*#key_buffer_size = 512M#" /etc/my.cnf
+        sed -i "s#^table_open_cache.*#table_open_cache = 2048#" /etc/my.cnf
+        sed -i "s#^sort_buffer_size.*#sort_buffer_size = 8M#" /etc/my.cnf
+        sed -i "s#^read_buffer_size.*#read_buffer_size = 8M#" /etc/my.cnf
+        sed -i "s#^myisam_sort_buffer_size.*#myisam_sort_buffer_size = 128M#" /etc/my.cnf
+        sed -i "s#^thread_cache_size.*#thread_cache_size = 256#" /etc/my.cnf
+        sed -i "s#^query_cache_size.*#query_cache_size = 256M#" /etc/my.cnf
+        sed -i "s#^tmp_table_size.*#tmp_table_size = 256M#" /etc/my.cnf
+        sed -i "s#^innodb_buffer_pool_size.*#innodb_buffer_pool_size = 2048M#" /etc/my.cnf
+        sed -i "s#^innodb_log_file_size.*#innodb_log_file_size = 512M#" /etc/my.cnf
+        sed -i "s#^performance_schema_max_table_instances.*#performance_schema_max_table_instances = 8000" /etc/my.cnf
+    elif [[ ${MemTotal} -ge 32768 ]]; then
+        sed -i "s#^key_buffer_size.*#key_buffer_size = 1024M#" /etc/my.cnf
+        sed -i "s#^table_open_cache.*#table_open_cache = 4096#" /etc/my.cnf
+        sed -i "s#^sort_buffer_size.*#sort_buffer_size = 16M#" /etc/my.cnf
+        sed -i "s#^read_buffer_size.*#read_buffer_size = 16M#" /etc/my.cnf
+        sed -i "s#^myisam_sort_buffer_size.*#myisam_sort_buffer_size = 256M#" /etc/my.cnf
+        sed -i "s#^thread_cache_size.*#thread_cache_size = 512#" /etc/my.cnf
+        sed -i "s#^query_cache_size.*#query_cache_size = 512M#" /etc/my.cnf
+        sed -i "s#^tmp_table_size.*#tmp_table_size = 512M#" /etc/my.cnf
+        sed -i "s#^innodb_buffer_pool_size.*#innodb_buffer_pool_size = 4096M#" /etc/my.cnf
+        sed -i "s#^innodb_log_file_size.*#innodb_log_file_size = 1024M#" /etc/my.cnf
+        sed -i "s#^performance_schema_max_table_instances.*#performance_schema_max_table_instances = 10000" /etc/my.cnf
+    fi
+}
+
+MySQL_Optimze
 
 /etc/init.d/mysqld start
 /usr/local/mysql/bin/mysqladmin -u root password $mysql_root_passwd
+if [ $? -ne 0 ]; then
+    echo "update MySQL root password failed. Exit."
+    exit 1
+else:
+    echo "update MySQL root password succeed."
 
 cat > /tmp/mysql_sec_script<<EOF
-use mysql;
-update user set password=password('$mysql_root_passwd') where user='root';
-delete from user where not (user='root') ;
-delete from user where user='root' and password=''; 
+delete from mysql.user where not (User='root') ;
+DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
 drop database test;
 DROP USER ''@'%';
 flush privileges;
@@ -328,39 +517,53 @@ EOF
 
 rm -f /tmp/mysql_sec_script
 
-/etc/init.d/mysql restart
-/etc/init.d/mysql stop
+/etc/init.d/mysqld restart
+/etc/init.d/mysqld stop
 
 #########################Install PHP#########################
 
 cd $source_dir/src
-tar -zxvf php-5.5.5.tar.gz
-cd php-5.5.5
+tar -zxvf php-7.1.11.tar.gz
+cd php-7.1.11
 ./configure --prefix=/usr/local/php \
 --with-apxs2=/usr/local/apache2/bin/apxs \
---with-config-file-path=/usr/local/php \
---with-mysql=/usr/local/mysql \
---with-mysqli=/usr/local/mysql/bin/mysql_config \
---with-curl=ext/curl \
+--with-config-file-path=/usr/local/php/etc \
+--with-config-file-scan-dir=/usr/local/php/conf.d \
+--with-curl \
+--with-jpeg-dir --with-png-dir \
 --with-iconv \
+--with-freetype-dir \
 --with-gd \
+--with-iconv-dir \
 --with-mcrypt \
 --with-bz2 \
 --with-gettext \
 --with-mhash \
+--with-openssl \
 --with-zlib \
 --with-xmlrpc \
 --enable-bcmath \
---enable-fpm \
+--enable-fpm --with-fpm-user=www --with-fpm-group=www \
+--enable-inline-optimization \
+--enable-mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd \
 --enable-mbstring \
+--enable-ftp \
+--enable-gd-native-ttf \
+--enable-intl --with-xsl \
 --enable-soap \
 --enable-mbregex \
+--enable-pcntl \
+--enable-session \
+--enable-shmop \
+--enable-sysvsem \
 --enable-sockets \
 --enable-zip \
 --enable-xml \
 --enable-libxml \
 --without-pear \
---enable-opcache
+--enable-opcache \
+-disable-fileinfo --disable-rpath
+
 #php 5.5 已集成Zend Optimizer+，Optimizer+ 于 2013年3月中旬改名为 Opcache，配置时加上--enable-opcache即可。Zend Opcache 与 eaccelerator 相冲突。
 #php 5.5 安装以后默认没有php.ini，把php.ini-production复制成为安装目录下的php.ini。
 #经测试如果--with-config-file-path，主配置文件也一样位于安装根目录
@@ -369,20 +572,20 @@ cd php-5.5.5
 #强行加入--enable-fastcgi会导致提示configure: WARNING: unrecognized options: --enable-fastcgi
 make ZEND_EXTRA_LIBS='-liconv'
 make install
-#安装完成以后会在/usr/local/apache2/modules目录下生成libphp5.so，同时执行apachectl -M可以看到已支持php5模块
-#同时会向httpd.conf中写入一行LoadModule php5_module，如果打算使用php-fpm，此行可注销
+#安装完成以后会在/usr/local/apache2/modules目录下生成libphp7.so，同时执行apachectl -M可以看到已支持php5模块
+#同时会向httpd.conf中写入一行LoadModule php7_module，如果打算使用php-fpm，此行可注销
 #一篇配置php-fpm很好的文档 http://wiki.apache.org/httpd/PHP-FPM
 
 cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
 chmod +x /etc/init.d/php-fpm
-cp sapi/fpm/php-fpm.conf /usr/local/php/etc/
 cp php.ini-production /usr/local/php/etc/php.ini
+cp /usr/local/php/etc/php-fpm.conf.default /usr/local/php/etc/php-fpm.conf
 ln -s /usr/local/php/etc/php.ini /etc/php.ini
 ln -s /usr/local/php/etc/php.ini /usr/local/php/php.ini
 ln -s /usr/local/php/bin/php /usr/bin/php
 ln -s /usr/local/php/bin/phpize /usr/bin/phpize
 
-sed -i 's,LoadModule php5_module,#LoadModule php5_module,g' /usr/local/apache2/conf/httpd.conf
+sed -i 's,LoadModule php7_module,#LoadModule php7_module,g' /usr/local/apache2/conf/httpd.conf
 sed -i 's/post_max_size = 8M/post_max_size = 30M/g' /usr/local/php/etc/php.ini
 sed -i 's/memory_limit = 128M/memory_limit = 64M/g' /usr/local/php/etc/php.ini
 sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 30M/g' /usr/local/php/etc/php.ini
@@ -392,9 +595,9 @@ sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/etc/php.ini
 sed -i 's,enable_dl = Off,enable_dl = On,g' /usr/local/php/etc/php.ini
 sed -i 's,display_errors = Off,display_errors = On,g' /usr/local/php/etc/php.ini
 
-sed -i 's/;opcache.enable=0/opcache.enable=1/g' /usr/local/php/etc/php.ini
-sed -i 's/;opcache.enable_cli=0/opcache.enable_cli=1/g' /usr/local/php/etc/php.ini
-sed -i 's/;opcache.memory_consumption=64/opcache.memory_consumption=128/g' /usr/local/php/etc/php.ini
+sed -i '/opcache.enable=/copcache.enable=1' /usr/local/php/etc/php.ini
+sed -i '/opcache.enable_cli=/copcache.enable_cli=1' /usr/local/php/etc/php.ini
+sed -i '/opcache.memory_consumption=/copcache.memory_consumption=128' /usr/local/php/etc/php.ini
 sed -i 's/;opcache.interned_strings_buffer=4/opcache.interned_strings_buffer=8/g' /usr/local/php/etc/php.ini
 sed -i 's/;opcache.max_accelerated_files=2000/opcache.max_accelerated_files=4000/g' /usr/local/php/etc/php.ini
 sed -i 's/;opcache.revalidate_freq=2/opcache.revalidate_freq=60/g' /usr/local/php/etc/php.ini
