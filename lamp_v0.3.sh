@@ -119,6 +119,7 @@ wget -c http://archive.apache.org/dist/httpd/httpd-2.4.29.tar.gz
 #wget -c http://downloads.mysql.com/archives/get/file/mysql-5.7.19.tar.gz
 wget -c http://downloads.mysql.com/archives/get/file/mysql-boost-5.7.19.tar.gz
 wget -c http://php.net/distributions/php-7.1.11.tar.gz
+wget -c https://files.phpmyadmin.net/phpMyAdmin/4.7.5/phpMyAdmin-4.7.5-all-languages.zip
 #wget -c http://www.zhukun.net/lamp_src__zhukun.net_20160107.tar.gz --no-check-certificate
 if [ -s lamp_src__zhukun.net_20160107.tar.gz ]; then
   echo "lamp_src__zhukun.net_20160107.tar.gz [found]"
@@ -598,30 +599,49 @@ sed -i 's,display_errors = Off,display_errors = On,g' /usr/local/php/etc/php.ini
 sed -i '/opcache.enable=/copcache.enable=1' /usr/local/php/etc/php.ini
 sed -i '/opcache.enable_cli=/copcache.enable_cli=1' /usr/local/php/etc/php.ini
 sed -i '/opcache.memory_consumption=/copcache.memory_consumption=128' /usr/local/php/etc/php.ini
-sed -i 's/;opcache.interned_strings_buffer=4/opcache.interned_strings_buffer=8/g' /usr/local/php/etc/php.ini
-sed -i 's/;opcache.max_accelerated_files=2000/opcache.max_accelerated_files=4000/g' /usr/local/php/etc/php.ini
-sed -i 's/;opcache.revalidate_freq=2/opcache.revalidate_freq=60/g' /usr/local/php/etc/php.ini
-sed -i 's/;opcache.fast_shutdown=0/opcache.fast_shutdown=1/g' /usr/local/php/etc/php.ini
+sed -i '/opcache.interned_strings_buffer=/copcache.interned_strings_buffer=8' /usr/local/php/etc/php.ini
+sed -i '/opcache.max_accelerated_files=/copcache.max_accelerated_files=4000' /usr/local/php/etc/php.ini
+sed -i '/opcache.revalidate_freq=/copcache.revalidate_freq=60' /usr/local/php/etc/php.ini
+sed -i '/opcache.fast_shutdown=/copcache.fast_shutdown=1' /usr/local/php/etc/php.ini
 
-sed -i '1871a\zend_extension=\/usr\/local\/php\/lib\/php\/extensions\/no-debug-zts-20121212\/opcache.so' /usr/local/php/etc/php.ini
-sed -i 's/disable_functions =/disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_alter,ini_restore,dl,pfsockopen,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,fsocket/g' /usr/local/php/etc/php.ini
+sed -i '/\[opcache\]/azend_extension="/usr/local/php/lib/php/extensions/no-debug-non-zts-20160303/opcache.so"' /usr/local/php/etc/php.ini
+sed -i 's/disable_functions =.*/disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,popen,ini_alter,ini_restore,dl,pfsockopen,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,fsocket/g' /usr/local/php/etc/php.ini
 
-sed -i 's,user = nobody,user = www,g' /usr/local/php/etc/php-fpm.conf
-sed -i 's,group = nobody,group = www,g' /usr/local/php/etc/php-fpm.conf
-sed -i 's,;pid = run/php-fpm.pid,pid = /usr/local/php/var/run/php-fpm.pid,g' /usr/local/php/etc/php-fpm.conf
-sed -i 's,;error_log = log/php-fpm.log,error_log = /usr/local/php/var/log/php-fpm.log,g' /usr/local/php/etc/php-fpm.conf
-sed -i 's,;log_level = notice,log_level = notice,g' /usr/local/php/etc/php-fpm.conf
-sed -i 's,;request_terminate_timeout = 0,request_terminate_timeout = 60s,g' /usr/local/php/etc/php-fpm.conf
+cp /usr/local/php/etc/php-fpm.d/www.conf.default /usr/local/php/etc/php-fpm.d/www.conf
+sed -i 's/user = .*/user = www/g' /usr/local/php/etc/php-fpm.d/www.conf
+sed -i 's/group = .*/group = www/g' /usr/local/php/etc/php-fpm.d/www.conf
+sed -i 's/pm.max_children =.*/pm.max_children = 10/' /usr/local/php/etc/php-fpm.d/www.conf
+sed -i 's/pm.max_spare_servers =.*/pm.max_spare_servers = 6/' /usr/local/php/etc/php-fpm.d/www.conf
+sed -i 's/request_terminate_timeout =.*/request_terminate_timeout = 40/' /usr/local/php/etc/php-fpm.d/www.conf
+sed -i 's/request_slowlog_timeout =.*/request_slowlog_timeout = 0/' /usr/local/php/etc/php-fpm.d/www.conf
+sed -i 's/slowlog =.*/slowlog = var\/log\/slow.log/' /usr/local/php/etc/php-fpm.d/www.conf
+
+sed -i '/pid = .*/cpid = run/php-fpm.pid' /usr/local/php/etc/php-fpm.conf
+sed -i '/error_log = .*/cerror_log = log/php-fpm.log' /usr/local/php/etc/php-fpm.conf
+sed -i '/log_level = .*/clog_level = notice' /usr/local/php/etc/php-fpm.conf
 
 #some clean work
-mv /usr/local/php/etc/php-fpm.conf /usr/local/php/etc/php-fpm.conf.bak
-grep -v '^;' /usr/local/php/etc/php-fpm.conf.bak | grep -v '^$' | grep -v '^[[:space:]]$' > /usr/local/php/etc/php-fpm.conf
+#mv /usr/local/php/etc/php-fpm.conf /usr/local/php/etc/php-fpm.conf.bak
+#grep -v '^;' /usr/local/php/etc/php-fpm.conf.bak | grep -v '^$' | grep -v '^[[:space:]]$' > /usr/local/php/etc/php-fpm.conf
 
 chkconfig --level 2345 php-fpm on
 
-cd $source_dir/src
-tar -zxvf p.tar.gz
-cp p.php /home/wwwroot/default/
+#cd $source_dir/src
+#tar -zxvf p.tar.gz
+#cp p.php /home/wwwroot/default/
+
+cat >/home/wwwroot/default/p.php<<eof
+<?php
+
+// Show all information, defaults to INFO_ALL
+phpinfo();
+
+// Show just the module information.
+// phpinfo(8) yields identical results.
+phpinfo(INFO_MODULES);
+
+?>
+eof
 
 cat >/home/wwwroot/default/index.html<<eof
 <!DOCTYPE html>
@@ -652,8 +672,8 @@ if [ -d /home/wwwroot/default/pma ]; then
 fi
 
 cd $source_dir/src
-unzip phpMyAdmin-4.6.6-all-languages.zip
-mv phpMyAdmin-4.6.6-all-languages /home/wwwroot/default/pma
+unzip phpMyAdmin-4.7.5-all-languages.zip
+mv phpMyAdmin-4.7.5-all-languages /home/wwwroot/default/pma
 cp -f /home/wwwroot/default/pma/config.sample.inc.php /home/wwwroot/default/pma/config.inc.php
 sed -i "/^\$cfg\['blowfish_secret'\]/c\$cfg\['blowfish_secret'\] = 'i@zhukun.net';" /home/wwwroot/default/pma/config.inc.php
 
@@ -700,6 +720,8 @@ echo -e "\033[41;37m *                                                   * \033[
 echo -e "\033[41;37m ***************************************************** \033[0m"
 echo ""
 echo " * Default Page: http://$ip/"
+echo ""
+echo " * Default Page: http://$ip/p.php"
 echo ""
 echo " * phpMyAdmin: http://$ip/pma/"
 echo ""
