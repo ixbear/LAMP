@@ -240,7 +240,8 @@ sed -i 's,#LoadModule rewrite_module,LoadModule rewrite_module,g' /usr/local/apa
 sed -i 's,Options Indexes FollowSymLinks,Options FollowSymLinks,g' /usr/local/apache2/conf/httpd.conf  #关闭目录浏览
 sed -i 's,#Include conf/extra/httpd-mpm.conf,Include conf/extra/httpd-mpm.conf,g' /usr/local/apache2/conf/httpd.conf
 sed -i 's,#Include conf/extra/httpd-vhosts.conf,Include conf/extra/httpd-vhosts.conf,g' /usr/local/apache2/conf/httpd.conf
-#sed -i 's,#LoadModule vhost_alias_module modules/mod_vhost_alias.so,LoadModule vhost_alias_module modules/mod_vhost_alias.so,g' /usr/local/apache2/conf/httpd.conf
+sed -i 's,#Include conf/extra/httpd-ssl.conf,Include conf/extra/httpd-ssl.conf,g' /usr/local/apache2/conf/httpd.conf
+sed -i 's,#LoadModule vhost_alias_module modules/mod_vhost_alias.so,LoadModule vhost_alias_module modules/mod_vhost_alias.so,g' /usr/local/apache2/conf/httpd.conf
 
 sed -i "s,ServerAdmin you@example.com,ServerAdmin $admin_email,g" /usr/local/apache2/conf/httpd.conf
 sed -i "s,#ServerName www.example.com:80,ServerName $hostname:80,g" /usr/local/apache2/conf/httpd.conf
