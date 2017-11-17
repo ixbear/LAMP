@@ -252,6 +252,7 @@ sed -i "s,ServerAdmin you@example.com,ServerAdmin $admin_email,g" /usr/local/apa
 #开启php-fpm，参考http://wiki.apache.org/httpd/PHP-FPM
 sed -i 's,#LoadModule proxy_module modules/mod_proxy.so,LoadModule proxy_module modules/mod_proxy.so,g' /usr/local/apache2/conf/httpd.conf
 sed -i 's,#LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so,LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so,g' /usr/local/apache2/conf/httpd.conf
+sed -i 's,#LoadModule proxy_http_module modules/mod_proxy_http.so,LoadModule proxy_http_module modules/mod_proxy_http.so,g' /usr/local/apache2/conf/httpd.conf
 sed -i 's,/usr/local/apache2/htdocs,/home/wwwroot,g' /usr/local/apache2/conf/httpd.conf
 sed -i 's,/usr/local/apache2/docs,/home/wwwroot,g' /usr/local/apache2/conf/extra/httpd-ssl.conf
 
