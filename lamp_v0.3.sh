@@ -672,15 +672,15 @@ eof
 
 #########################Install phpMyAdmin#########################
 ##  ##
-if [ -d /home/wwwroot/default/pma ]; then
-	mv /home/wwwroot/default/pma /home/wwwroot/default/pma_old
+if [ -d /home/wwwroot/default/pm ]; then
+	mv /home/wwwroot/default/pm /home/wwwroot/default/pm_old
 fi
 
 cd $source_dir/src
 unzip phpMyAdmin-4.7.5-all-languages.zip
-mv phpMyAdmin-4.7.5-all-languages /home/wwwroot/default/pma
-cp -f /home/wwwroot/default/pma/config.sample.inc.php /home/wwwroot/default/pma/config.inc.php
-sed -i "/^\$cfg\['blowfish_secret'\]/c\$cfg\['blowfish_secret'\] = 'i@zhukun.net';" /home/wwwroot/default/pma/config.inc.php
+mv phpMyAdmin-4.7.5-all-languages /home/wwwroot/default/pm
+cp -f /home/wwwroot/default/pm/config.sample.inc.php /home/wwwroot/default/pm/config.inc.php
+sed -i "/^\$cfg\['blowfish_secret'\]/c\$cfg\['blowfish_secret'\] = 'i@zhukun.net';" /home/wwwroot/default/pm/config.inc.php
 
 ## others ##
 mkdir /home/wwwlogs
@@ -728,7 +728,7 @@ echo " * Default Page: http://$ip/"
 echo ""
 echo " * Default Page: http://$ip/p.php"
 echo ""
-echo " * phpMyAdmin: http://$ip/pma/"
+echo " * phpMyAdmin: http://$ip/pm/"
 echo ""
 echo -e " * MySQL root password: \033[41;37m $mysql_root_passwd \033[0m"
 echo ""
